@@ -21,16 +21,19 @@ def get_personal_info(individual):
     pass
 
 
-def url_constructor(base_url="https://linkedin.com/search/results/people/?", **kwargs):
+def url_constructor(base_url='https://linkedin.com/search/results/people/?origin=GLOBAL_SEARCH_HEADER', **kwargs):
     """
-    :param parameters:
     :param base_url:
+    :param kwargs:
     :return:
     """
-    
+    for key, value in kwargs.iteritems():
+        base_url += "&" + key + "=" + value
+    return base_url
 
 
-def search_by_filter(origin="origin=GLOBAL_SEARCH_HEADER", **kwargs):
+
+def search_by_filter(**kwargs):
     """
     :type filters: object
     :param filters:
@@ -72,6 +75,8 @@ def main():
 
 
 if __name__ == '__main__':
+    # print(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='data miner%2Cscientist', company='facebook', facetNonprofitInterest='["volunteer"%2C"nonprofitboard"]'))
+    # sys.exit()
     main()
 
 """
