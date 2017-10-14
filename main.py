@@ -30,7 +30,19 @@ def linkedin_login(username, password):
     :param password:
     :return: bool
     """
-    
+    browser.get("https://linkedin.com")
+    try:
+        email_field = WebDriverWait(browser, 15).until(
+            EC.presence_of_element_located((By.ID, "login-email"))
+        )
+    except:
+        print("The login page did not load correctly.")
+        return False
+    password_field = browser.find_element_by_id("login-password")
+    email_field.send_keys(username)
+    password_field.send_keys(password)
+    password_field.send_keys(Keys.RETURN)
+    return True
 
 
 def main():
