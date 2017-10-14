@@ -17,8 +17,47 @@ def write_row_to_spreadsheet(row):
     pass
 
 
+def get_first_degree_email(individual_url):
+    """
+    :param individual_url:
+    :return:
+    """
+    browser.get(individual_url)
+    try:
+        contact_details_btn = WebDriverWait(browser, 15).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "contact-see-more-less"))
+        )
+    except:
+        print("Although 1st degree connection, email not available for %s", individual_url)
+        return ""
+
+    contact_details_btn.click()
+    try:
+        profile_personal_section = WebDriverWait(browser, 15).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "pv-profile-section__section-info"))
+        )
+    except:
+        print("Can't find personal info section")
+        return ""
+
+    email_section = profile_personal_section.find_element_by_class_name("ci-email")
+    email_addr = email_section.find_element_by_tag_name("a").text
+    return email_addr
+
+
 def get_personal_info(individual):
-    pass
+    """
+    :param individual:
+    :return:
+    """
+    profile_url = individual.find_element_by_tag_name("a").get_attribute("href")
+    individual_name = individual.find_element_by_class_name("actor-name").text
+    job_title = individual.find_element_by_class_name("subline-level-1").text
+    connection_distance = individual.find_element_by_class_name("dist-value").text
+    if connection_distance is not "1st":
+        return "", individual_name, profile_url, job_title
+
+    return get_first_degree_email(profile_url), individual_name, profile_url, job_title
 
 
 def url_constructor(base_url='https://linkedin.com/search/results/people/?origin=GLOBAL_SEARCH_HEADER', **kwargs):
@@ -33,13 +72,21 @@ def url_constructor(base_url='https://linkedin.com/search/results/people/?origin
 
 
 
-def search_by_filter(**kwargs):
+def search_by_filter(url):
     """
-    :type filters: object
-    :param filters:
+    :param kwargs:
     :return:
     """
-    pass
+    browser.get(url)
+    try:
+        search_result_ul = WebDriverWait(browser, 15).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "results-list"))
+        )
+    except:
+        print("Could not get results for the given search filters.")
+        sys.exit()
+
+    results_details = [get_personal_info(people) for people in search_result_ul.find_elements_by_tag_name('li')]
 
 
 def linkedin_login(username, password):
@@ -71,7 +118,7 @@ def main():
     if not linkedin_login(sys.argv[1], sys.argv[2]):
         sys.exit()
 
-    search_by_filter()
+    search_by_filter(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='data miner%2Cscientist', company='facebook', facetNonprofitInterest='["volunteer"%2C"nonprofitboard"]'))
 
 
 if __name__ == '__main__':
