@@ -1,20 +1,45 @@
-from bs4 import BeautifulSoup
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import sys
+import json
+
+from apiclient import discovery
+from httplib2 import Http
+from oauth2client import file, client, tools
 
 browser = webdriver.Chrome()
 
 
-def connect_with_spreadsheet(credentials):
-    pass
+def connect_with_spreadsheet(clientsecrets, store, scopes=('https://www.googleapis.com/auth/spreadsheets')):
+    """
+    :param store:
+    :param clientsecrets:
+    :param scopes:
+    :return:
+    """
+    credz = store.get()
+    if not credz or credz.invalid:
+        flow = client.flow_from_clientsecrets(clientsecrets, scopes)
+        credz = tools.run_flow(flow, store)
+    return discovery.build('sheets', 'v4', http=credz.authorize(Http()))
 
 
-def write_row_to_spreadsheet(row):
-    pass
+def write_row_to_spreadsheet(SHEETS, sheet_ID, rows, range, valueInputOption="RAW"):
+    """
+    :param rows:
+    :return:
+    """
+    body = {
+        'values': rows
+    }
+    result = SHEETS.spreadsheets().values().update(
+    spreadsheetId=sheet_ID, range=range,
+    valueInputOption=valueInputOption, body=body).execute()
+
+
 
 
 def get_first_degree_email(individual_url):
@@ -134,4 +159,25 @@ Connections of : facetConnectionOf=['sometoken']
 Non profit interests: facetNonprofitInterest=["volunteer"%2C"nonprofitboard"]
 Origin : origin=GLOBAL_SEARCH_HEADER
 https://www.linkedin.com/search/results/people/?company=Facebook&facetNetwork=%5B%22F%22%2C%22S%22%2C%22O%22%5D&firstName=&keywords=data%20miner&lastName=Bhandari&origin=FACETED_SEARCH&title=Data%20miner
+"""
+
+
+"""
+Updating rows to spreadsheet.
+values = [
+    [
+        # Cell values ...
+    ],
+    # Additional rows ...
+]
+body = {
+  'values': values
+}
+
+
+
+result = service.spreadsheets().values().update(
+    spreadsheetId=spreadsheet_id, range=range_name,
+    valueInputOption=value_input_option, body=body).execute()
+
 """
