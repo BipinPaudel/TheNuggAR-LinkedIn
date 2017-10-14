@@ -1,0 +1,44 @@
+Hi Kin,
+
+Thank you for this.
+
+Please see below details of your 48h data mining test.
+
+Create a bot that extracts the following from people’s LinkedIn bio’s, into
+a Google spreadsheet:
+
+-
+
+Email address
+-
+
+Linkedin profile name
+-
+
+Linkedin profile URL
+-
+
+Linkedin job title
+
+Target accounts using either of these criterias:
+
+-
+
+People who have the word “mindfulness” or “meditation” as part of their
+public profile, see here
+<https://www.linkedin.com/search/results/people/?keywords=meditation&origin=GLOBAL_SEARCH_HEADER>
+-
+
+Follows any of these
+<https://www.linkedin.com/search/results/groups/?keywords=meditation&origin=GLOBAL_SEARCH_HEADER>
+groups: https://www.linkedin.com/search/results/groups/?
+keywords=meditation&origin=GLOBAL_SEARCH_HEADER
+<https://www.linkedin.com/search/results/groups/?keywords=meditation&origin=GLOBAL_SEARCH_HEADER>
+
+You are free to use the language of your choice, however I can recommend
+Python.
+
+Share the Google Sheet with the output of the data, and send me the Github
+URL as well.
+
+You have got 48 hours from now, best of luck!
