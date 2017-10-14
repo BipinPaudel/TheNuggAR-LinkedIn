@@ -8,21 +8,36 @@ import sys
 
 browser = webdriver.Chrome()
 
+
 def connect_with_spreadsheet(credentials):
     pass
+
 
 def write_row_to_spreadsheet(row):
     pass
 
+
 def get_personal_info(individual):
     pass
 
-def search_by_filter(filters):
+
+def url_constructor(base_url="https://linkedin.com/search/results/people/?", **kwargs):
     """
+    :param parameters:
+    :param base_url:
+    :return:
+    """
+    
+
+
+def search_by_filter(origin="origin=GLOBAL_SEARCH_HEADER", **kwargs):
+    """
+    :type filters: object
     :param filters:
     :return:
     """
     pass
+
 
 def linkedin_login(username, password):
     """
@@ -55,5 +70,16 @@ def main():
 
     search_by_filter()
 
+
 if __name__ == '__main__':
     main()
+
+"""
+Possible filters on search
+connections: facetNetwork=["F"] , facetNetwork=["F"%2C"S"], facetNetwork=["F"%2C"S"%2C"O"]
+Keywords: firstName=Bhishan , lastName=Bhandari, keywords=data miner%2Cscientist, company=facebook, school=Deerwalk Institute of Technology, title=Data Miner%2CSoftware Engineer
+Connections of : facetConnectionOf=['sometoken']
+Non profit interests: facetNonprofitInterest=["volunteer"%2C"nonprofitboard"]
+Origin : origin=GLOBAL_SEARCH_HEADER
+https://www.linkedin.com/search/results/people/?company=Facebook&facetNetwork=%5B%22F%22%2C%22S%22%2C%22O%22%5D&firstName=&keywords=data%20miner&lastName=Bhandari&origin=FACETED_SEARCH&title=Data%20miner
+"""
