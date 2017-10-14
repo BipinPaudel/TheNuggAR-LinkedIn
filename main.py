@@ -13,6 +13,7 @@ from oauth2client import file, client, tools
 browser = webdriver.Chrome()
 
 
+
 def connect_with_spreadsheet(clientsecrets, store, scopes=('https://www.googleapis.com/auth/spreadsheets')):
     """
     :param store:
@@ -39,6 +40,20 @@ def write_row_to_spreadsheet(SHEETS, sheet_ID, rows, range, valueInputOption="RA
     spreadsheetId=sheet_ID, range=range,
     valueInputOption=valueInputOption, body=body).execute()
 
+
+
+def navigate_next_page():
+    """
+    :return:
+    """
+    try:
+        next_button = WebDriverWait(browser, 15).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "next"))
+        )
+    except:
+        print("No more pages to traverse.")
+        sys.exit()
+    next_button.click()
 
 
 
