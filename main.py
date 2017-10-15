@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
+import time
 import sys
 from apiclient import discovery
 from httplib2 import Http
@@ -58,6 +59,7 @@ def navigate_next_page():
         print("No more pages to traverse.")
         sys.exit()
     next_button.click()
+    time.sleep(2)
 
 
 def get_first_degree_email(individual_url):
@@ -89,8 +91,11 @@ def get_first_degree_email(individual_url):
         browser.switch_to.window(browser.window_handles[0])
         return ""
 
-    email_section = profile_personal_section.find_element_by_class_name("ci-email")
-    email_addr = email_section.find_element_by_tag_name("a").text
+    # email_section = profile_personal_section.find_element_by_class_name("pv-contact-info__contact-type ci-email")
+    # email_addr = email_section.find_element_by_tag_name("a").text
+    email_addr = profile_personal_section.find_elements_by_xpath('//a[contains(@href, "mailto:")]')
+    email_addr = email_addr[-1].text
+    print(email_addr)
     browser.close()
     browser.switch_to.window(browser.window_handles[0])
     return email_addr
@@ -101,11 +106,14 @@ def get_personal_info(individual):
     :param individual:
     :return:
     """
-    profile_url = individual.find_element_by_tag_name("a").get_attribute("href")
     individual_name = individual.find_element_by_class_name("actor-name").text
     job_title = individual.find_element_by_class_name("subline-level-1").text
+    profile_url = individual.find_element_by_tag_name("a").get_attribute("href")
     connection_distance = individual.find_element_by_class_name("dist-value").text
-    if connection_distance is not "1st":
+
+    print(individual_name)
+    print(connection_distance)
+    if connection_distance != "1st":
         return "", individual_name, profile_url, job_title
 
     return [get_first_degree_email(profile_url), individual_name, profile_url, job_title]
@@ -136,6 +144,12 @@ def search_by_filter(sheets):
         print("Could not get results for the given search filters.")
         sys.exit()
 
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    print(len(search_result_ul.find_elements_by_tag_name('li')))
+    print(search_result_ul.find_elements_by_tag_name('li')[0].find_element_by_class_name('actor-name').text)
+    # results_details = []
+    # for people in search_result_ul.find_elements_by_tag_name('li'):
+      #  results_details.append(get_personal_info(people))
     results_details = [get_personal_info(people) for people in search_result_ul.find_elements_by_tag_name('li')]
     write_row_to_spreadsheet(sheets, '1_BQBY9sinWoUD1LXaYMP7rsOIr2zDgG7bUfsczYU140', results_details, 'A' + str(sheet_range))
     sheet_range += len(results_details)
@@ -172,7 +186,9 @@ def main():
     if not linkedin_login(sys.argv[1], sys.argv[2]):
         sys.exit()
 
-    browser.get(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='data miner%2Cscientist', company='facebook',
+    # browser.get(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='data miner%2Cscientist', company='facebook',
+    #                             facetNonprofitInterest='["volunteer"%2C"nonprofitboard"]'))
+    browser.get(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='software engineer',
                                 facetNonprofitInterest='["volunteer"%2C"nonprofitboard"]'))
     sheets = connect_with_spreadsheet(
         "client_secret_391502371883-ucq6afoq80m5h6gj3k9mur3ankfa5go6.apps.googleusercontent.com.json",
