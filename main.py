@@ -91,8 +91,6 @@ def get_first_degree_email(individual_url):
         browser.switch_to.window(browser.window_handles[0])
         return ""
 
-    # email_section = profile_personal_section.find_element_by_class_name("pv-contact-info__contact-type ci-email")
-    # email_addr = email_section.find_element_by_tag_name("a").text
     email_addr = profile_personal_section.find_elements_by_xpath('//a[contains(@href, "mailto:")]')
     email_addr = email_addr[-1].text
     print(email_addr)
@@ -145,11 +143,6 @@ def search_by_filter(sheets):
         sys.exit()
 
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    print(len(search_result_ul.find_elements_by_tag_name('li')))
-    print(search_result_ul.find_elements_by_tag_name('li')[0].find_element_by_class_name('actor-name').text)
-    # results_details = []
-    # for people in search_result_ul.find_elements_by_tag_name('li'):
-      #  results_details.append(get_personal_info(people))
     results_details = [get_personal_info(people) for people in search_result_ul.find_elements_by_tag_name('li')]
     write_row_to_spreadsheet(sheets, '1_BQBY9sinWoUD1LXaYMP7rsOIr2zDgG7bUfsczYU140', results_details, 'A' + str(sheet_range))
     sheet_range += len(results_details)
@@ -188,7 +181,7 @@ def main():
 
     # browser.get(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='data miner%2Cscientist', company='facebook',
     #                             facetNonprofitInterest='["volunteer"%2C"nonprofitboard"]'))
-    browser.get(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='software engineer',
+    browser.get(url_constructor(facetNetwork='["F"%2C"S"%2C"O"]', keywords='meditation',
                                 facetNonprofitInterest='["volunteer"%2C"nonprofitboard"]'))
     sheets = connect_with_spreadsheet(
         "client_secret_391502371883-ucq6afoq80m5h6gj3k9mur3ankfa5go6.apps.googleusercontent.com.json",
